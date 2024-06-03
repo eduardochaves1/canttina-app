@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cantina</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<header th:replace="header :: header"></header>
+
+<div class="container mt-5">
+    <h1>Bem-vindo à Cantina</h1>
+    
+    <h2>Produtos Disponíveis</h2>
+    <div class="row">
+        <div class="col-md-4" th:each="produto : ${produtos}">
+            <div class="card mb-4">
+                <img class="card-img-top" th:src="${produto.urlImagem}" alt="Imagem do Produto">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${produto.nome}"></h5>
+                    <p class="card-text" th:text="'Preço: R$ ' + ${produto.preco}"></p>
+                    <p class="card-text" th:text="'Quantidade Disponível: ' + ${produto.quantidadeDisponivel}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <h2>Comandas</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Saldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="comanda : ${comandas}">
+                <td th:text="${comanda.name}"></td>
+                <td th:text="${comanda.phoneNumber}"></td>
+                <td th:text="${comanda.saldoComanda}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
