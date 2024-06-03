@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos - Cantina</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav th:replace="navbar :: navbar"></nav>
+
+    <div class="container mt-4">
+        <h1>Produtos</h1>
+        <div class="mb-3">
+            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addProdutoModal">Adicionar Produto</a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="produto : ${produtos}">
+                    <td th:text="${produto.id}">1</td>
+                    <td th:text="${produto.nome}">Nome do Produto</td>
+                    <td th:text="${produto.preco}">0.00</td>
+                    <td th:text="${produto.descricao}">Descrição do Produto</td>
+                    <td>
+                        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editProdutoModal" th:attr="data-id=${produto.id}">Editar</a>
+                        <a href="#" class="btn btn-danger btn-sm" th:attr="data-id=${produto.id}" th:onclick="'deleteProduto(' + ${produto.id} + ')'">Excluir</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Adicionar Produto -->
+    <div class="modal fade" id="addProdutoModal" tabindex="-1" role="dialog" aria-labelledby="addProdutoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProdutoModalLabel">Adicionar Produto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/api/produtos}" method="post">
+                        <div class="form-group">
+                            <label for="nome">Nome</label>
+                            <input type="text" class="form-control" id="nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="preco">Preço</label>
+                            <input type="number" class="form-control" id="preco" name="preco" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="descricao">Descrição</label>
+                            <textarea class="form-control" id="descricao" name="descricao" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Produto -->
+    <div class="modal fade" id="editProdutoModal" tabindex="-1" role="dialog" aria-labelledby="editProdutoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProdutoModalLabel">Editar Produto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/api/produtos/{id}(id=${produto.id})}" method="post">
+                        <div class="form-group">
+                            <label for="editNome">Nome</label>
+                            <input type="text" class="form-control" id="editNome" name="nome" th:value="${produto.nome}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPreco">Preço</label>
+                            <input type="number" class="form-control" id="editPreco" name="preco" step="0.01" th:value="${produto.preco}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDescricao">Descrição</label>
+                            <textarea class="form-control" id="editDescricao" name="descricao" th:value="${produto.descricao}" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Função para deletar produto
+        function deleteProduto(id) {
+            if (confirm('Você tem certeza que deseja excluir este produto?')) {
+                fetch(`/api/produtos/${id}`, {
+                    method: 'DELETE'
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        }
+
+        // Configurar modal de edição com dados do produto selecionado
+        $('#editProdutoModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var modal = $(this);
+            // Preencher o modal com dados do produto (exemplo simplificado, ajuste conforme necessário)
+            fetch(`/api/produtos/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    modal.find('#editNome').val(data.nome);
+                    modal.find('#editPreco').val(data.preco);
+                    modal.find('#editDescricao').val(data.descricao);
+                    modal.find('form').attr('action', `/api/produtos/${id}`);
+                });
+        });
+    </script>
+</body>
+</html>

@@ -2,50 +2,58 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Cantina</title>
+    <title>Home - Cantina</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<header th:replace="header :: header"></header>
+    <!-- Navbar -->
+    <nav th:replace="navbar :: navbar"></nav>
 
-<div class="container mt-5">
-    <h1>Bem-vindo à Cantina</h1>
-    
-    <h2>Produtos Disponíveis</h2>
-    <div class="row">
-        <div class="col-md-4" th:each="produto : ${produtos}">
-            <div class="card mb-4">
-                <img class="card-img-top" th:src="${produto.urlImagem}" alt="Imagem do Produto">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${produto.nome}"></h5>
-                    <p class="card-text" th:text="'Preço: R$ ' + ${produto.preco}"></p>
-                    <p class="card-text" th:text="'Quantidade Disponível: ' + ${produto.quantidadeDisponivel}"></p>
+    <div class="container mt-4">
+        <div class="jumbotron">
+            <h1 class="display-4">Bem-vindo à Cantina!</h1>
+            <p class="lead">Este é o sistema de gerenciamento da cantina. Utilize o menu para navegar entre as diferentes seções.</p>
+            <hr class="my-4">
+            <p>Você pode gerenciar produtos, comandas e compras de forma fácil e eficiente.</p>
+            <a class="btn btn-primary btn-lg" href="#" role="button">Saiba mais</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="assets/images/produtos.jpg" class="card-img-top" alt="Produtos">
+                    <div class="card-body">
+                        <h5 class="card-title">Produtos</h5>
+                        <p class="card-text">Gerencie os produtos disponíveis na cantina.</p>
+                        <a href="/produtos" class="btn btn-primary">Ver Produtos</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="assets/images/comandas.jpg" class="card-img-top" alt="Comandas">
+                    <div class="card-body">
+                        <h5 class="card-title">Comandas</h5>
+                        <p class="card-text">Gerencie as comandas dos clientes.</p>
+                        <a href="/comandas" class="btn btn-primary">Ver Comandas</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="assets/images/compras.jpg" class="card-img-top" alt="Compras">
+                    <div class="card-body">
+                        <h5 class="card-title">Compras</h5>
+                        <p class="card-text">Gerencie as compras realizadas na cantina.</p>
+                        <a href="/compras" class="btn btn-primary">Ver Compras</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <h2>Comandas</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Telefone</th>
-                <th>Saldo</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="comanda : ${comandas}">
-                <td th:text="${comanda.name}"></td>
-                <td th:text="${comanda.phoneNumber}"></td>
-                <td th:text="${comanda.saldoComanda}"></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
