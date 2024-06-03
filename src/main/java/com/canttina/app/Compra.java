@@ -25,12 +25,12 @@ public class Compra {
         // Default constructor
     }
 
-    public Compra(Comanda comanda, Produto produto, Integer quantidade, Double totalPreco, LocalDateTime timestamp) {
+    public Compra(Comanda comanda, Produto produto, Integer quantidade, Double totalPreco) {
         this.comanda = comanda;
         this.produto = produto;
         this.quantidade = quantidade;
         this.totalPreco = totalPreco;
-        this.timestamp = timestamp;
+        this.timestamp = LocalDateTime.now();
     }
 
     // Getters and setters
