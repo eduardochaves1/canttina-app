@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Compras - Cantina</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav th:replace="navbar :: navbar"></nav>
+
+    <div class="container mt-4">
+        <h1>Compras</h1>
+        <div class="mb-3">
+            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addCompraModal">Adicionar Compra</a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ID da Comanda</th>
+                    <th>ID do Produto</th>
+                    <th>Quantidade</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="compra : ${compras}">
+                    <td th:text="${compra.id}">1</td>
+                    <td th:text="${compra.comandaId}">Comanda ID</td>
+                    <td th:text="${compra.produtoId}">Produto ID</td>
+                    <td th:text="${compra.quantidade}">0</td>
+                    <td>
+                        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editCompraModal" th:attr="data-id=${compra.id}">Editar</a>
+                        <a href="#" class="btn btn-danger btn-sm" th:attr="data-id=${compra.id}" th:onclick="'deleteCompra(' + ${compra.id} + ')'">Excluir</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Adicionar Compra -->
+    <div class="modal fade" id="addCompraModal" tabindex="-1" role="dialog" aria-labelledby="addCompraModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCompraModalLabel">Adicionar Compra</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/api/compras}" method="post">
+                        <div class="form-group">
+                            <label for="comandaId">ID da Comanda</label>
+                            <input type="text" class="form-control" id="comandaId" name="comandaId" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="produtoId">ID do Produto</label>
+                            <input type="text" class="form-control" id="produtoId" name="produtoId" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantidade">Quantidade</label>
+                            <input type="number" class="form-control" id="quantidade" name="quantidade" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Compra -->
+    <div class="modal fade" id="editCompraModal" tabindex="-1" role="dialog" aria-labelledby="editCompraModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCompraModalLabel">Editar Compra</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/api/compras/{id}(id=${compra.id})}" method="post">
+                        <div class="form-group">
+                            <label for="editComandaId">ID da Comanda</label>
+                            <input type="text" class="form-control" id="editComandaId" name="comandaId" th:value="${compra.comandaId}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editProdutoId">ID do Produto</label>
+                            <input type="text" class="form-control" id="editProdutoId" name="produtoId" th:value="${compra.produtoId}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editQuantidade">Quantidade</label>
+                            <input type="number" class="form-control" id="editQuantidade" name="quantidade" th:value="${compra.quantidade}" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Função para deletar compra
+        function deleteCompra(id) {
+            if (confirm('Você tem certeza que deseja excluir esta compra?')) {
+                fetch(`/api/compras/${id}`, {
+                    method: 'DELETE'
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        }
+
+        // Configurar modal de edição com dados da compra selecionada
+        $('#editCompraModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var modal = $(this);
+            // Preencher o modal com dados da compra (exemplo simplificado, ajuste conforme necessário)
+            fetch(`/api/compras/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    modal.find('#editComandaId').val(data.comandaId);
+                    modal.find('#editProdutoId').val(data.produtoId);
+                    modal.find('#editQuantidade').val(data.quantidade);
+                    modal.find('form').attr('action', `/api/compras/${id}`);
+                });
+        });
+    </script>
+</body>
+</html>

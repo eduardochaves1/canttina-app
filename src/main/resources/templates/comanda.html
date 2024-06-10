@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Comandas - Cantina</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav th:replace="navbar :: navbar"></nav>
+
+    <div class="container mt-4">
+        <h1>Comandas</h1>
+        <div class="mb-3">
+            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addComandaModal">Adicionar Comanda</a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome do Cliente</th>
+                    <th>Saldo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="comanda : ${comandas}">
+                    <td th:text="${comanda.id}">1</td>
+                    <td th:text="${comanda.nomeCliente}">Nome do Cliente</td>
+                    <td th:text="${comanda.saldo}">0.00</td>
+                    <td>
+                        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editComandaModal" th:attr="data-id=${comanda.id}">Editar</a>
+                        <a href="#" class="btn btn-danger btn-sm" th:attr="data-id=${comanda.id}" th:onclick="'deleteComanda(' + ${comanda.id} + ')'">Excluir</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Adicionar Comanda -->
+    <div class="modal fade" id="addComandaModal" tabindex="-1" role="dialog" aria-labelledby="addComandaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addComandaModalLabel">Adicionar Comanda</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/api/comandas}" method="post">
+                        <div class="form-group">
+                            <label for="nomeCliente">Nome do Cliente</label>
+                            <input type="text" class="form-control" id="nomeCliente" name="nomeCliente" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="saldo">Saldo</label>
+                            <input type="number" class="form-control" id="saldo" name="saldo" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Comanda -->
+    <div class="modal fade" id="editComandaModal" tabindex="-1" role="dialog" aria-labelledby="editComandaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editComandaModalLabel">Editar Comanda</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/api/comandas/{id}(id=${comanda.id})}" method="post">
+                        <div class="form-group">
+                            <label for="editNomeCliente">Nome do Cliente</label>
+                            <input type="text" class="form-control" id="editNomeCliente" name="nomeCliente" th:value="${comanda.nomeCliente}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editSaldo">Saldo</label>
+                            <input type="number" class="form-control" id="editSaldo" name="saldo" th:value="${comanda.saldo}" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Função para deletar comanda
+        function deleteComanda(id) {
+            if (confirm('Você tem certeza que deseja excluir esta comanda?')) {
+                fetch(`/api/comandas/${id}`, {
+                    method: 'DELETE'
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        }
+
+        // Configurar modal de edição com dados da comanda selecionada
+        $('#editComandaModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var modal = $(this);
+            // Preencher o modal com dados da comanda (exemplo simplificado, ajuste conforme necessário)
+            fetch(`/api/comandas/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    modal.find('#editNomeCliente').val(data.nomeCliente);
+                    modal.find('#editSaldo').val(data.saldo);
+                    modal.find('form').attr('action', `/api/comandas/${id}`);
+                });
+        });
+    </script>
+</body>
+</html>
